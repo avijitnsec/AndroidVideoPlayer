@@ -27,7 +27,7 @@ customized playerView            |  quality options
 
  // Room
  // To save each video subtitles & video last watched length to resume player on next play
- implementation 'androidx.room:room-runtime:2.2.5'
+ implementation 'androidx.room:room-runtime:2.2.3'
 
  // Stetho Optional
  debugImplementation 'com.facebook.stetho:stetho:1.5.1'
@@ -66,9 +66,6 @@ Initialize your ExoPlayer in VideoPlayer as follow :
      context, 100 * 1024 * 1024, 5 * 1024 * 1024);
 
   trackSelector = new DefaultTrackSelector(context);
-  trackSelector.setParameters(trackSelector
-               .buildUponParameters()
-               .setMaxVideoSizeSd());
 
   exoPlayer = new SimpleExoPlayer.Builder(context)
                   .setTrackSelector(trackSelector)
