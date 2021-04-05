@@ -49,15 +49,20 @@ class PlayerActivity : AppCompatActivity(), View.OnClickListener, PlayerControll
         when (focusChange) {
             AudioManager.AUDIOFOCUS_GAIN -> {
                 if (player != null) //  player.getPlayer().setPlayWhenReady(true);
-                    break
-                // Audio focus was lost, but it's possible to duck (i.e.: play quietly)
-                if (player != null) player.getPlayer().setPlayWhenReady(false)
+                    return@OnAudioFocusChangeListener
             }
-            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> if (player != null) player.getPlayer().setPlayWhenReady(false)
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
+                if (player != null)
+                {
+                    player!!.player!!.playWhenReady = false
+                }
+            }
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> if (player != null) player!!.player!!.playWhenReady = false
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT, AudioManager.AUDIOFOCUS_LOSS ->                             // Lost audio focus, probably "permanently"
                 // Lost audio focus, but will gain it back (shortly), so note whether
                 // playback should resume
-                if (player != null) player.getPlayer().setPlayWhenReady(false)
+                if (player != null) player!!.player!!.playWhenReady = false
+        //getPlayer().setPlayWhenReady(false)
         }
     }
 
@@ -93,17 +98,17 @@ class PlayerActivity : AppCompatActivity(), View.OnClickListener, PlayerControll
         back = findViewById(R.id.btn_back)
 
         //optional setting
-        playerView.getSubtitleView()!!.visibility = View.GONE
-        mute.setOnClickListener(this)
-        unMute.setOnClickListener(this)
-        subtitle.setOnClickListener(this)
-        setting.setOnClickListener(this)
-        lock.setOnClickListener(this)
-        unLock.setOnClickListener(this)
-        nextBtn.setOnClickListener(this)
-        preBtn.setOnClickListener(this)
-        retry.setOnClickListener(this)
-        back.setOnClickListener(this)
+        playerView!!.getSubtitleView()!!.visibility = View.GONE
+        mute!!.setOnClickListener(this)
+        unMute!!.setOnClickListener(this)
+        subtitle!!.setOnClickListener(this)
+        setting!!.setOnClickListener(this)
+        lock!!.setOnClickListener(this)
+        unLock!!.setOnClickListener(this)
+        nextBtn!!.setOnClickListener(this)
+        preBtn!!.setOnClickListener(this)
+        retry!!.setOnClickListener(this)
+        back!!.setOnClickListener(this)
     }
 
     private fun initSource() {
@@ -120,8 +125,8 @@ class PlayerActivity : AppCompatActivity(), View.OnClickListener, PlayerControll
         player!!.seekToOnDoubleTap()
         playerView!!.setControllerVisibilityListener { visibility: Int ->
             Log.i(TAG, "onVisibilityChange: $visibility")
-            if (player!!.isLock()) playerView!!.hideController()
-            back!!.visibility = if (visibility == View.VISIBLE && !player!!.isLock()) View.VISIBLE else View.GONE
+            if (player!!.isLock) playerView!!.hideController()
+            back!!.visibility = if (visibility == View.VISIBLE && !player!!.isLock) View.VISIBLE else View.GONE
         }
     }
 
@@ -223,8 +228,8 @@ class PlayerActivity : AppCompatActivity(), View.OnClickListener, PlayerControll
     }
 
     private fun checkIfVideoHasSubtitle(): Boolean {
-        if (player.getCurrentVideo().subtitles == null ||
-                player.getCurrentVideo().subtitles.size == 0) {
+        if (player!!.currentVideo!!.subtitles == null ||
+                player!!.currentVideo!!.subtitles!!.isEmpty()) {
             subtitle!!.setImageResource(R.drawable.exo_no_subtitle_btn)
             return true
         }
@@ -259,9 +264,9 @@ class PlayerActivity : AppCompatActivity(), View.OnClickListener, PlayerControll
         layoutParams.gravity = Gravity.CENTER
         alertDialog!!.window!!.attributes = layoutParams
         val recyclerView: RecyclerView = view.findViewById(R.id.subtitle_recycler_view)
-        recyclerView.adapter = SubtitleAdapter(player.getCurrentVideo().subtitles, player)
-        for (i in player.getCurrentVideo().subtitles.indices) {
-            Log.d("subtitle", "showSubtitleDialog: " + player.getCurrentVideo().subtitles.get(i).title)
+        recyclerView.adapter = player!!.currentVideo!!.subtitles?.let { SubtitleAdapter(it, player!!) }
+        for (i in player!!.currentVideo!!.subtitles!!.indices) {
+            Log.d("subtitle", "showSubtitleDialog: " + player!!.currentVideo!!.subtitles!![i].title)
         }
         val noSubtitle = view.findViewById<TextView>(R.id.no_subtitle_text_view)
         noSubtitle.setOnClickListener { view1: View? ->
@@ -322,11 +327,11 @@ class PlayerActivity : AppCompatActivity(), View.OnClickListener, PlayerControll
     }
 
     override fun setVideoWatchedLength() {
-        getDatabase(applicationContext).videoDao().updateWatchedLength(player.getCurrentVideo().url, player.getWatchedLength())
+        player!!.currentVideo!!.url?.let { getDatabase(applicationContext).videoDao().updateWatchedLength(it, player!!.watchedLength) }
     }
 
     override fun videoEnded() {
-        getDatabase(applicationContext).videoDao().updateWatchedLength(player.getCurrentVideo().url, 0)
+        player!!.currentVideo!!.url?.let { getDatabase(applicationContext).videoDao().updateWatchedLength(it, 0) }
         player!!.seekToNext()
     }
 

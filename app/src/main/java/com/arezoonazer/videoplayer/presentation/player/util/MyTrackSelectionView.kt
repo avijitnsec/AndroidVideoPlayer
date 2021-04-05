@@ -28,6 +28,7 @@ import android.view.View
 import android.widget.CheckedTextView
 import android.widget.LinearLayout
 import androidx.annotation.AttrRes
+import androidx.annotation.Nullable
 import com.arezoonazer.videoplayer.R
 import com.google.android.exoplayer2.Format
 import com.google.android.exoplayer2.RendererCapabilities
@@ -51,7 +52,7 @@ class MyTrackSelectionView @JvmOverloads constructor(
     private val componentListener: ComponentListener
     private var allowAdaptiveSelections = false
     private var trackNameProvider: TrackNameProvider
-    private lateinit var trackViews: Array<Array<CheckedTextView?>>
+    private lateinit var trackViews: Array<Array<CheckedTextView?>?>
     private var trackSelector: DefaultTrackSelector? = null
     private var rendererIndex = 0
     private var trackGroups: TrackGroupArray? = null
@@ -129,6 +130,7 @@ class MyTrackSelectionView @JvmOverloads constructor(
         override = parameters.getSelectionOverride(rendererIndex, trackGroups!!)
 
         // Add per-track views.
+//        trackViews = arrayOfNulls<Array<CheckedTextView?>>(trackGroups.length)
         trackViews = arrayOfNulls(trackGroups!!.length)
         for (groupIndex in 0 until trackGroups!!.length) {
             val group = trackGroups!![groupIndex]
@@ -153,7 +155,7 @@ class MyTrackSelectionView @JvmOverloads constructor(
                     trackView.isFocusable = false
                     trackView.isEnabled = false
                 }
-                trackViews[groupIndex][trackIndex] = trackView
+                trackViews[groupIndex]?.set(trackIndex, trackView)
                 addView(trackView)
             }
         }
@@ -164,8 +166,8 @@ class MyTrackSelectionView @JvmOverloads constructor(
         disableView.isChecked = isDisabled
         defaultView.isChecked = !isDisabled && override == null
         for (i in trackViews.indices) {
-            for (j in trackViews[i].indices) {
-                trackViews[i][j]!!.isChecked = override != null && override!!.groupIndex == i && override!!.containsTrack(j)
+            for (j in trackViews[i]!!.indices) {
+                trackViews[i]?.get(j)!!.isChecked = override != null && override!!.groupIndex == i && override!!.containsTrack(j)
                 //                Log.d(TAG, "override.groupIndex" + override.groupIndex + " override.containsTrack(j) " + override.containsTrack(j));
             }
         }
