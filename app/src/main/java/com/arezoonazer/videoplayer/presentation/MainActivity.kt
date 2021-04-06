@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun makeListOfUri() {
-        videoUriList.add(Video("https://www.radiantmediaplayer.com/media/bbb-360p.mp4", java.lang.Long.getLong("zero", 0)))
+        videoUriList.add(Video("https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4", java.lang.Long.getLong("zero", 0)))
         videoUriList.add(Video("https://5b44cf20b0388.streamlock.net:8443/vod/smil:bbb.smil/playlist.m3u8", java.lang.Long.getLong("zero", 0)))
         subtitleList.add(Subtitle(2, "German", "https://durian.blender.org/wp-content/content/subtitles/sintel_en.srt"))
         subtitleList.add(Subtitle(2, "French", "https://durian.blender.org/wp-content/content/subtitles/sintel_fr.srt"))
