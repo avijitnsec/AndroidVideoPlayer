@@ -13,6 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".presentation.player.PlayerActivity"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
             android:name=".presentation.MainActivity"
             android:screenOrientation="landscape">
             <intent-filter>

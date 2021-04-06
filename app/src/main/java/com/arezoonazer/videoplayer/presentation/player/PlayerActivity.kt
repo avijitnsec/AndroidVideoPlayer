@@ -69,7 +69,6 @@ class PlayerActivity : AppCompatActivity(), View.OnClickListener, PlayerControll
     /***********************************************************
      * Activity lifecycle
      */
-    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
@@ -98,7 +97,7 @@ class PlayerActivity : AppCompatActivity(), View.OnClickListener, PlayerControll
         back = findViewById(R.id.btn_back)
 
         //optional setting
-        playerView!!.getSubtitleView()!!.visibility = View.GONE
+        playerView!!.subtitleView!!.visibility = View.GONE
         mute!!.setOnClickListener(this)
         unMute!!.setOnClickListener(this)
         subtitle!!.setOnClickListener(this)
@@ -269,13 +268,13 @@ class PlayerActivity : AppCompatActivity(), View.OnClickListener, PlayerControll
             Log.d("subtitle", "showSubtitleDialog: " + player!!.currentVideo!!.subtitles!![i].title)
         }
         val noSubtitle = view.findViewById<TextView>(R.id.no_subtitle_text_view)
-        noSubtitle.setOnClickListener { view1: View? ->
+        noSubtitle.setOnClickListener {
             if (playerView!!.subtitleView!!.visibility == View.VISIBLE) showSubtitle(false)
             alertDialog!!.dismiss()
             player!!.resumePlayer()
         }
         val cancelDialog = view.findViewById<Button>(R.id.cancel_dialog_btn)
-        cancelDialog.setOnClickListener { view1: View? ->
+        cancelDialog.setOnClickListener {
             alertDialog!!.dismiss()
             player!!.resumePlayer()
         }
